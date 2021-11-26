@@ -12,7 +12,7 @@ public struct Quote: Decodable {
     public var quote: String
     public var author: String
 
-    enum CodingKeys: CodingKey {
+    enum CodingKeys: String, CodingKey {
         case id = "quote_id"
         case quote
         case author
