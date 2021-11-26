@@ -14,6 +14,7 @@
 		A0AE5EFE275161750098E1AA /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A0AE5EFD275161750098E1AA /* Assets.xcassets */; };
 		A0AE5F01275161750098E1AA /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = A0AE5EFF275161750098E1AA /* LaunchScreen.storyboard */; };
 		A0AE5F0C275161760098E1AA /* BreakingBadTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0AE5F0B275161760098E1AA /* BreakingBadTests.swift */; };
+		A0AE5F2A275188850098E1AA /* BreakingBadAppDomain in Frameworks */ = {isa = PBXBuildFile; productRef = A0AE5F29275188850098E1AA /* BreakingBadAppDomain */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -37,6 +38,8 @@
 		A0AE5F02275161750098E1AA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		A0AE5F07275161760098E1AA /* BreakingBadTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BreakingBadTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		A0AE5F0B275161760098E1AA /* BreakingBadTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BreakingBadTests.swift; sourceTree = "<group>"; };
+		A0AE5F26275167190098E1AA /* BreakingBadData */ = {isa = PBXFileReference; lastKnownFileType = folder; path = BreakingBadData; sourceTree = "<group>"; };
+		A0AE5F2727516A4B0098E1AA /* BreakingBadAppDomain */ = {isa = PBXFileReference; lastKnownFileType = folder; path = BreakingBadAppDomain; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -44,6 +47,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A0AE5F2A275188850098E1AA /* BreakingBadAppDomain in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -60,9 +64,11 @@
 		A0AE5EE8275161730098E1AA = {
 			isa = PBXGroup;
 			children = (
+				A0AE5F24275166CD0098E1AA /* LocalPackage */,
 				A0AE5EF3275161730098E1AA /* BreakingBad */,
 				A0AE5F0A275161760098E1AA /* BreakingBadTests */,
 				A0AE5EF2275161730098E1AA /* Products */,
+				A0AE5F28275188850098E1AA /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -97,6 +103,22 @@
 			path = BreakingBadTests;
 			sourceTree = "<group>";
 		};
+		A0AE5F24275166CD0098E1AA /* LocalPackage */ = {
+			isa = PBXGroup;
+			children = (
+				A0AE5F2727516A4B0098E1AA /* BreakingBadAppDomain */,
+				A0AE5F26275167190098E1AA /* BreakingBadData */,
+			);
+			path = LocalPackage;
+			sourceTree = "<group>";
+		};
+		A0AE5F28275188850098E1AA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -113,6 +135,9 @@
 			dependencies = (
 			);
 			name = BreakingBad;
+			packageProductDependencies = (
+				A0AE5F29275188850098E1AA /* BreakingBadAppDomain */,
+			);
 			productName = BreakingBad;
 			productReference = A0AE5EF1275161730098E1AA /* BreakingBad.app */;
 			productType = "com.apple.product-type.application";
@@ -495,6 +520,13 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A0AE5F29275188850098E1AA /* BreakingBadAppDomain */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = BreakingBadAppDomain;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A0AE5EE9275161730098E1AA /* Project object */;
 }
