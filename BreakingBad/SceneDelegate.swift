@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import BreakingBadAppDomain
+import BreakingBadData
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -16,7 +18,65 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to optionally configure and attach the UIWindow `window` to the provided UIWindowScene `scene`.
         // If using a storyboard, the `window` property will automatically be initialized and attached to the scene.
         // This delegate does not imply the connecting scene or session are new (see `application:configurationForConnectingSceneSession` instead).
-        guard let _ = (scene as? UIWindowScene) else { return }
+        guard let windowScene = (scene as? UIWindowScene) else { return }
+        let window = UIWindow(windowScene: windowScene)
+        let tabBarController = UITabBarController()
+
+
+        let configuration = URLSessionConfiguration.default
+        configuration.urlCache = .shared
+        let urlSession = URLSession(configuration: configuration)
+        let imageLoader = ImageCacheLoaderURLSession(
+            urlSession: urlSession
+        )
+
+
+        let characterListVC = CharacterListViewController(
+            viewModel: CharacterListViewModel(
+                useCase: CharacterListUseCaseImp(
+                    characterListRepository: CharacterListRepositoryImp(
+                        api: CharacterListAPI(),
+                        urlSession: .shared,
+                        mapper: CharacterMapper()
+                    )
+                ),
+                imageLoader: imageLoader
+            )
+        )
+
+        characterListVC.tabBarItem = UITabBarItem(
+            title: "Characters",
+            image: UIImage(systemName: "person.3"),
+            selectedImage: UIImage(systemName: "person.3.fill")
+        )
+
+        let episodeListVC = UIViewController()
+        episodeListVC.view.backgroundColor = .blue
+        episodeListVC.tabBarItem = UITabBarItem(
+            title: "Episodes",
+            image: UIImage(systemName: "film"),
+            selectedImage: UIImage(systemName: "film.fill")
+        )
+
+        let quoteListVC = UIViewController()
+        quoteListVC.view.backgroundColor = .brown
+        quoteListVC.tabBarItem = UITabBarItem(
+            title: "Quotes",
+            image: UIImage(systemName: "quote.bubble"),
+            selectedImage: UIImage(systemName: "quote.bubble.fill")
+        )
+
+        tabBarController.viewControllers = [
+            characterListVC,
+            episodeListVC,
+            quoteListVC
+        ]
+        tabBarController.selectedIndex = 0
+
+        window.rootViewController = tabBarController
+        window.makeKeyAndVisible()
+
+        self.window = window
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

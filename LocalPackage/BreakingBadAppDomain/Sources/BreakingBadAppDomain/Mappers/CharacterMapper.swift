@@ -8,9 +8,11 @@
 import Foundation
 import BreakingBadData
 
-struct CharacterMapper: Mapper {
+public struct CharacterMapper: Mapper {
 
-    func map(from input: Character) -> CharacterEntity {
+    public init() { }
+
+    public func map(from input: Character) -> CharacterEntity {
         .init(
             id: input.id,
             name: input.name,
