@@ -7,50 +7,6 @@
 
 import UIKit
 import Combine
-import BreakingBadAppDomain
-import BreakingBadData
-
-class CharacterListViewModel: ObservableObject {
-
-    private let useCase: CharacterListUseCase
-    private let imageLoader: ImageCacheLoader
-
-    init(useCase: CharacterListUseCase, imageLoader: ImageCacheLoader) {
-        self.useCase = useCase
-        self.imageLoader = imageLoader
-    }
-
-    @Published private(set) var items: [CharacterTableViewCell.Model] = []
-
-    func load() {
-        Task {
-            let characters = (try? await useCase.get()) ?? []
-            let items = characters.map {
-                CharacterTableViewCell.Model(
-                    id: $0.id,
-                    name: $0.name,
-                    nickname: $0.nickname,
-                    imageURL: $0.headshotURL
-                )
-            }
-
-            DispatchQueue.main.async {
-                self.items = items
-            }
-        }
-    }
-
-    func fetchImage(for item: CharacterTableViewCell.Model) async {
-        guard let url = item.imageURL, item.image == nil,
-              let index = items.firstIndex(of: item) else { return }
-
-        let image = try? await imageLoader.image(forURL: url)
-        var item = item
-        item.image = image
-        self.items[index] = item
-    }
-
-}
 
 class CharacterListViewController: UIViewController {
 
@@ -149,27 +105,8 @@ extension CharacterListViewController: UITableViewDelegate {
             return
         }
 
-        // TODO: improve dependency injection and routing
-        let detailVC = CharacterDetailViewController(
-            characterId: character.id,
-            viewModel: CharacterDetailViewModel(
-                useCase: CharacterDetailUseCaseImp(
-                    characterRepository: CharacterDetailsRepositoryImp(
-                        api: CharacterDetailsAPI(),
-                        urlSession: URLSession.shared,
-                        mapper: CharacterMapper()
-                    ),
-                    quotesRepository: QuoteForAuthorRepositoryImp(
-                        api: QuoteForAuthorAPI(),
-                        urlSession: URLSession.shared,
-                        mapper: QuoteMapper()
-                    )
-                ),
-                imageFetcher: Dependencies.imageFetcher
-            )
-        )
-
-        navigationController?.pushViewController(detailVC, animated: true)
+        viewModel.router.openDetail(id: character.id)
+        
     }
 
 }

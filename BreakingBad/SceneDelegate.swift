@@ -23,7 +23,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let window = UIWindow(windowScene: windowScene)
         let tabBarController = UITabBarController()
 
-
+        let characterRouter = CharacterListRouterImp()
         let characterListVC = CharacterListViewController(
             viewModel: CharacterListViewModel(
                 useCase: CharacterListUseCaseImp(
@@ -33,9 +33,11 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                         mapper: CharacterMapper()
                     )
                 ),
-                imageLoader: Dependencies.imageFetcher
+                imageLoader: Dependencies.imageFetcher,
+                router: characterRouter
             )
         )
+
         characterListVC.title = "Characters"
         characterListVC.tabBarItem = UITabBarItem(
             title: "Characters",
@@ -89,7 +91,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         tabBarController.selectedIndex = 0
 
         characterListVC.navigationController?.navigationBar.prefersLargeTitles = true
-
+        characterRouter.navigationController = characterListVC.navigationController
+        
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()
 
