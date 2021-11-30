@@ -22,26 +22,39 @@
                             <constraint firstAttribute="width" secondItem="wCN-1n-SxK" secondAttribute="height" multiplier="1:1" id="5Vl-bI-jp1"/>
                         </constraints>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mge-Fm-Blk">
-                        <rect key="frame" x="113" y="10" width="41.5" height="21"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="QjH-eo-jK3">
+                        <rect key="frame" x="113" y="60.5" width="234" height="44.5"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="mge-Fm-Blk">
+                                <rect key="frame" x="0.0" y="0.0" width="234" height="30"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RqL-Yh-Emm">
+                                <rect key="frame" x="0.0" y="30" width="234" height="14.5"/>
+                                <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                    </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="mge-Fm-Blk" firstAttribute="leading" secondItem="wCN-1n-SxK" secondAttribute="trailing" constant="8" symbolic="YES" id="0w6-qa-L4Y"/>
                     <constraint firstItem="wCN-1n-SxK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="8" id="Cuy-1R-5UM"/>
+                    <constraint firstItem="QjH-eo-jK3" firstAttribute="leading" secondItem="wCN-1n-SxK" secondAttribute="trailing" constant="8" id="M1t-g7-1qc"/>
                     <constraint firstAttribute="bottom" secondItem="wCN-1n-SxK" secondAttribute="bottom" constant="11" id="WL2-vr-Wic"/>
-                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="mge-Fm-Blk" secondAttribute="trailing" constant="8" id="s4d-At-fXU"/>
+                    <constraint firstItem="QjH-eo-jK3" firstAttribute="top" relation="greaterThanOrEqual" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="oy7-Xj-SSd"/>
+                    <constraint firstAttribute="trailing" secondItem="QjH-eo-jK3" secondAttribute="trailing" constant="16" id="p5Z-AN-Mwe"/>
+                    <constraint firstItem="wCN-1n-SxK" firstAttribute="bottom" secondItem="QjH-eo-jK3" secondAttribute="bottom" id="qia-6C-4Mp"/>
                     <constraint firstItem="wCN-1n-SxK" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="8" id="tHA-ST-ZAO"/>
-                    <constraint firstItem="mge-Fm-Blk" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="10" id="u0Y-fe-RlU"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>
             <connections>
                 <outlet property="headshotImageView" destination="wCN-1n-SxK" id="wIG-94-Lbs"/>
                 <outlet property="nameLabel" destination="mge-Fm-Blk" id="pCB-xA-DxY"/>
+                <outlet property="nicknameLabel" destination="RqL-Yh-Emm" id="uNB-gV-dH5"/>
             </connections>
             <point key="canvasLocation" x="168.84057971014494" y="113.83928571428571"/>
         </tableViewCell>

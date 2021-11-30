@@ -7,9 +7,9 @@
 
 import Foundation
 
-struct StatusCodeError: Error {
-    var code: Int
-    var response: URLResponse
+public struct StatusCodeError: Error {
+    public var code: Int
+    public var response: URLResponse
 }
 
 public extension URLResponse {

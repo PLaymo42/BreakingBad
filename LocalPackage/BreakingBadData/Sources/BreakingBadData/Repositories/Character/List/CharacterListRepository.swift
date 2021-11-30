@@ -17,10 +17,10 @@ public struct CharacterListRepositoryImp<M: Mapper>: CharacterListRepository whe
     
     private let api: CharacterListAPI
     private let mapper: M
-    private let urlSession: URLSession
+    private let urlSession: NetworkSession
 
     public init(api: CharacterListAPI,
-         urlSession: URLSession,
+         urlSession: NetworkSession,
          mapper: M) {
         self.mapper = mapper
         self.urlSession = urlSession
@@ -28,7 +28,10 @@ public struct CharacterListRepositoryImp<M: Mapper>: CharacterListRepository whe
     }
 
     public func get(decoder: JSONDecoder) async throws -> [M.OUT] {
-        let (data, response) = try await urlSession.data(for: api.urlRequest)
+
+        guard let urlRequest = api.build() else { throw BreakingBadError.malformedAPI }
+
+        let (data, response) = try await urlSession.data(for: urlRequest)
         try response.throwOnFailureStatusCode()
         let decoded = try decoder.decode([M.IN].self, from: data)
         return decoded.map { mapper.map(from: $0) }

@@ -8,6 +8,7 @@
 import UIKit
 import Combine
 import BreakingBadAppDomain
+import BreakingBadData
 
 class CharacterListViewModel: ObservableObject {
 
@@ -21,8 +22,22 @@ class CharacterListViewModel: ObservableObject {
 
     @Published private(set) var items: [CharacterTableViewCell.Model] = []
 
-    func load() async {
-        items = ((try? await useCase.get()) ?? []).map { .init(name: $0.nickname, imageURL: $0.headshotURL) }
+    func load() {
+        Task {
+            let characters = (try? await useCase.get()) ?? []
+            let items = characters.map {
+                CharacterTableViewCell.Model(
+                    id: $0.id,
+                    name: $0.name,
+                    nickname: $0.nickname,
+                    imageURL: $0.headshotURL
+                )
+            }
+
+            DispatchQueue.main.async {
+                self.items = items
+            }
+        }
     }
 
     func fetchImage(for item: CharacterTableViewCell.Model) async {
@@ -55,6 +70,7 @@ class CharacterListViewController: UIViewController {
                 return UITableViewCell()
             }
             cell.set(model: item)
+            cell.accessoryType = .disclosureIndicator
             Task { await self.viewModel.fetchImage(for: item) }
             return cell
         })
@@ -73,7 +89,7 @@ class CharacterListViewController: UIViewController {
         super.viewDidLoad()
 
         setup()
-        Task { await viewModel.load() }
+        viewModel.load()
     }
 
     func setup() {
@@ -104,7 +120,7 @@ class CharacterListViewController: UIViewController {
             forCellReuseIdentifier: "CharacterTableViewCell"
         )
         tableView.dataSource = dataSource
-        tableView.rowHeight = 100
+        tableView.delegate = self
     }
 
     func bind() {
@@ -121,3 +137,39 @@ class CharacterListViewController: UIViewController {
     }
 }
 
+extension CharacterListViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+
+        guard let character = dataSource.itemIdentifier(for: indexPath) else {
+            return
+        }
+
+        // TODO: improve dependency injection and routing
+        let detailVC = CharacterDetailViewController(
+            characterId: character.id,
+            viewModel: CharacterDetailViewModel(
+                useCase: CharacterDetailUseCaseImp(
+                    characterRepository: CharacterDetailsRepositoryImp(
+                        api: CharacterDetailsAPI(),
+                        urlSession: URLSession.shared,
+                        mapper: CharacterMapper()
+                    ),
+                    quotesRepository: QuoteForAuthorRepositoryImp(
+                        api: QuoteForAuthorAPI(),
+                        urlSession: URLSession.shared,
+                        mapper: QuoteMapper()
+                    )
+                ),
+                imageFetcher: Dependencies.imageFetcher
+            )
+        )
+
+        navigationController?.pushViewController(detailVC, animated: true)
+    }
+
+}

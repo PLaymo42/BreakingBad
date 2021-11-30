@@ -19,7 +19,7 @@ public struct CharacterMapper: Mapper {
             birthday: input.birthday,
             occupation: input.occupation,
             headshotURL: input.headshotURL,
-            status: input.status,
+            status: .init(rawValue: input.status) ?? .unknown,
             appearance: input.appearance,
             nickname: input.nickname,
             portrayed: input.portrayed

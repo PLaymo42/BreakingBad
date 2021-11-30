@@ -9,4 +9,5 @@ import Foundation
 
 enum BreakingBadError: Error {
     case httpError
+    case malformedAPI
 }

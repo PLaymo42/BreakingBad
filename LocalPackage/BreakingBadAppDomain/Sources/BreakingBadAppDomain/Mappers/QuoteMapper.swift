@@ -8,8 +8,11 @@
 import Foundation
 import BreakingBadData
 
-struct QuoteMapper: Mapper {
-    func map(from input: Quote) -> QuoteEntity {
+public struct QuoteMapper: Mapper {
+
+    public init() { }
+
+    public func map(from input: Quote) -> QuoteEntity {
         .init(
             id: input.id,
             quote: input.quote,

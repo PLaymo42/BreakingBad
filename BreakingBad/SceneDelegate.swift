@@ -8,6 +8,7 @@
 import UIKit
 import BreakingBadAppDomain
 import BreakingBadData
+import SwiftUI
 
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
 
@@ -23,43 +24,57 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let tabBarController = UITabBarController()
 
 
-        let configuration = URLSessionConfiguration.default
-        configuration.urlCache = .shared
-        let urlSession = URLSession(configuration: configuration)
-        let imageLoader = ImageCacheLoaderURLSession(
-            urlSession: urlSession
-        )
-
-
         let characterListVC = CharacterListViewController(
             viewModel: CharacterListViewModel(
                 useCase: CharacterListUseCaseImp(
                     characterListRepository: CharacterListRepositoryImp(
                         api: CharacterListAPI(),
-                        urlSession: .shared,
+                        urlSession: URLSession.shared,
                         mapper: CharacterMapper()
                     )
                 ),
-                imageLoader: imageLoader
+                imageLoader: Dependencies.imageFetcher
             )
         )
-
+        characterListVC.title = "Characters"
         characterListVC.tabBarItem = UITabBarItem(
             title: "Characters",
             image: UIImage(systemName: "person.3"),
             selectedImage: UIImage(systemName: "person.3.fill")
         )
 
-        let episodeListVC = UIViewController()
-        episodeListVC.view.backgroundColor = .blue
+        let episodeListVC = UIHostingController(
+            rootView: NavigationView {
+                SeasonListView(
+                    viewModel: SeasonListViewModel(
+                        useCase: EpisodeListUseCaseImp(
+                            episodeListRepository: EpisodeListRepositoryImp(
+                                api: EpisodeListAPI(),
+                                urlSession: URLSession.shared,
+                                mapper: EpisodeMapper()
+                            )
+                        )
+                    )
+                ).navigationTitle("Episodes")
+            }
+        )
         episodeListVC.tabBarItem = UITabBarItem(
             title: "Episodes",
             image: UIImage(systemName: "film"),
             selectedImage: UIImage(systemName: "film.fill")
         )
 
-        let quoteListVC = UIViewController()
-        quoteListVC.view.backgroundColor = .brown
+        let quoteListVC = UIHostingController(rootView: RandomQuoteView(
+            viewModel: RandomQuoteViewModel(
+                useCase: RandomQuoteUseCaseImp(
+                    quoteRepository: RandomQuoteRepositoryImp(
+                        api: RandomQuoteAPI(),
+                        urlSession: URLSession.shared,
+                        mapper: QuoteMapper()
+                    )
+                )
+            )
+        ))
         quoteListVC.tabBarItem = UITabBarItem(
             title: "Quotes",
             image: UIImage(systemName: "quote.bubble"),
@@ -67,11 +82,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         )
 
         tabBarController.viewControllers = [
-            characterListVC,
+            UINavigationController(rootViewController: characterListVC),
             episodeListVC,
             quoteListVC
         ]
         tabBarController.selectedIndex = 0
+
+        characterListVC.navigationController?.navigationBar.prefersLargeTitles = true
 
         window.rootViewController = tabBarController
         window.makeKeyAndVisible()

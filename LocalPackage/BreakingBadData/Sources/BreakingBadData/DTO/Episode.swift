@@ -11,8 +11,8 @@ public struct Episode: Decodable {
 
     public var id: Int
     public var title: String
-    public var season: Int
-    public var episode: Int
+    public var season: String
+    public var episode: String
     public var airDate: String
     public var characters: [String]
 

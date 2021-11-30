@@ -11,11 +11,11 @@ public struct CharacterListAPI: API {
 
     public init() { }
 
-    let urlRequest: URLRequest = {
+    func build() -> URLRequest? {
         var url = URL(string: "https://www.breakingbadapi.com/api/")!
         url.appendPathComponent("characters")
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = "GET"
         return urlRequest
-    }()
+    }
 }

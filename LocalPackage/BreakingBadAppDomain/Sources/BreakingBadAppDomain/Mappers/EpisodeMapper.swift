@@ -8,13 +8,16 @@
 import Foundation
 import BreakingBadData
 
-struct EpisodeMapper: Mapper {
-    func map(from input: Episode) -> EpisodeEntity {
+public struct EpisodeMapper: Mapper {
+
+    public init() { }
+
+    public func map(from input: Episode) -> EpisodeEntity {
         .init(
             id: input.id,
             title: input.title,
-            season: input.season,
-            episode: input.episode,
+            season: Int(input.season.trimmingCharacters(in: .whitespacesAndNewlines)) ?? 0,
+            episode: Int(input.episode.trimmingCharacters(in: .whitespacesAndNewlines)) ?? 0,
             airDate: input.airDate,
             characters: input.characters
         )

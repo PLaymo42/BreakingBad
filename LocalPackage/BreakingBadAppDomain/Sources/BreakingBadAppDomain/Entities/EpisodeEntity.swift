@@ -7,7 +7,22 @@
 
 import Foundation
 
-public struct EpisodeEntity: Decodable {
+public struct EpisodeEntity: Equatable {
+    public init(id: Int,
+                title: String,
+                season: Int,
+                episode: Int,
+                airDate: String,
+                characters: [String]
+    ) {
+        self.id = id
+        self.title = title
+        self.season = season
+        self.episode = episode
+        self.airDate = airDate
+        self.characters = characters
+    }
+
     public var id: Int
     public var title: String
     public var season: Int
