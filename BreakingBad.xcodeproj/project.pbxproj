@@ -30,6 +30,7 @@
 		A0F33114275532290087FAD3 /* CharacterDetailHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0F33112275532290087FAD3 /* CharacterDetailHeaderTableViewCell.swift */; };
 		A0F33115275532290087FAD3 /* CharacterDetailHeaderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = A0F33113275532290087FAD3 /* CharacterDetailHeaderTableViewCell.xib */; };
 		A0F33117275536610087FAD3 /* Dependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0F33116275536610087FAD3 /* Dependencies.swift */; };
+		A0FED1F327F6065F00B2CE47 /* Server.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0FED1F227F6065F00B2CE47 /* Server.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +72,7 @@
 		A0F33112275532290087FAD3 /* CharacterDetailHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CharacterDetailHeaderTableViewCell.swift; sourceTree = "<group>"; };
 		A0F33113275532290087FAD3 /* CharacterDetailHeaderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CharacterDetailHeaderTableViewCell.xib; sourceTree = "<group>"; };
 		A0F33116275536610087FAD3 /* Dependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Dependencies.swift; sourceTree = "<group>"; };
+		A0FED1F227F6065F00B2CE47 /* Server.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Server.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +151,7 @@
 				A0DE063A275257ED008B1510 /* Scenes */,
 				A0A29EB527567C54008C0397 /* Supporting Files */,
 				A0A29EB427567C36008C0397 /* Views */,
+				A0FED1F227F6065F00B2CE47 /* Server.swift */,
 			);
 			path = BreakingBad;
 			sourceTree = "<group>";
@@ -367,6 +370,7 @@
 				A0A29EBB27567FA8008C0397 /* CharacterDetailViewModel.swift in Sources */,
 				A0A29EB727567D56008C0397 /* CharacterListViewModel.swift in Sources */,
 				A0A29EB927567DBD008C0397 /* CharacterListRouter.swift in Sources */,
+				A0FED1F327F6065F00B2CE47 /* Server.swift in Sources */,
 				A0AE5F2E27519F0A0098E1AA /* CharacterTableViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -12,16 +12,20 @@ public protocol CharacterListUseCase {
     func get() async throws -> [CharacterEntity]
 }
 
-public struct CharacterListUseCaseImp<CharacterListRepo: CharacterListRepository>: CharacterListUseCase where CharacterListRepo.OUT == CharacterEntity {
+public struct CharacterListUseCaseImp: CharacterListUseCase {
 
-    private let characterListRepository: CharacterListRepo
-
-    public init(characterListRepository: CharacterListRepo) {
+    private let characterListRepository: CharacterListRepository
+    private let mapper: CharacterMapper
+    
+    public init(characterListRepository: CharacterListRepository,
+                mapper: CharacterMapper) {
         self.characterListRepository = characterListRepository
+        self.mapper = mapper
     }
 
     public func get() async throws -> [CharacterEntity] {
-        try await characterListRepository.get(decoder: JSONDecoder())
+        try await characterListRepository.get()
+            .map { mapper.map(from: $0)  }
     }
 
 }

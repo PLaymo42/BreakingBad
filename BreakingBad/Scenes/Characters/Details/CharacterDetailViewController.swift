@@ -75,7 +75,7 @@ class CharacterDetailViewController: UIViewController {
         super.viewDidLoad()
 
         setup()
-        viewModel.load(id: characterId)
+        Task { await viewModel.load(id: characterId) }
     }
 
     func setup() {

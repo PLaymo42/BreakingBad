@@ -27,11 +27,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let characterListVC = CharacterListViewController(
             viewModel: CharacterListViewModel(
                 useCase: CharacterListUseCaseImp(
-                    characterListRepository: CharacterListRepositoryImp(
-                        api: CharacterListAPI(),
-                        urlSession: URLSession.shared,
-                        mapper: CharacterMapper()
-                    )
+                    characterListRepository: Server.breakingBadService.characterListRepository,
+                    mapper: CharacterMapper()
                 ),
                 imageLoader: Dependencies.imageFetcher,
                 router: characterRouter
@@ -50,11 +47,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 SeasonListView(
                     viewModel: SeasonListViewModel(
                         useCase: EpisodeListUseCaseImp(
-                            episodeListRepository: EpisodeListRepositoryImp(
-                                api: EpisodeListAPI(),
-                                urlSession: URLSession.shared,
-                                mapper: EpisodeMapper()
-                            )
+                            episodeListRepository: Server.breakingBadService.episodeListRepository,
+                            mapper: EpisodeMapper()
                         )
                     )
                 ).navigationTitle("Episodes")
@@ -69,11 +63,8 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         let quoteListVC = UIHostingController(rootView: RandomQuoteView(
             viewModel: RandomQuoteViewModel(
                 useCase: RandomQuoteUseCaseImp(
-                    quoteRepository: RandomQuoteRepositoryImp(
-                        api: RandomQuoteAPI(),
-                        urlSession: URLSession.shared,
-                        mapper: QuoteMapper()
-                    )
+                    quoteRepository: Server.breakingBadService.randomQuoteRepository,
+                    mapper: QuoteMapper()
                 )
             )
         ))

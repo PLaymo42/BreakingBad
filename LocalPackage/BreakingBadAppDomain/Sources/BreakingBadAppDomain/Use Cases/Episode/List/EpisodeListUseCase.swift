@@ -17,7 +17,7 @@ public enum Serie {
     case betterCallSaul
 }
 
-extension EpisodeListAPI.Serie {
+extension BreakingBadData.Serie {
     init(from serie: Serie) {
         switch serie {
         case .breakingBad:
@@ -28,17 +28,20 @@ extension EpisodeListAPI.Serie {
     }
 }
 
-public struct EpisodeListUseCaseImp<EpisodeListRepo: EpisodeListRepository>: EpisodeListUseCase
-where EpisodeListRepo.OUT == EpisodeEntity {
+public struct EpisodeListUseCaseImp: EpisodeListUseCase {
 
-    private let episodeListRepository: EpisodeListRepo
-
-    public init(episodeListRepository: EpisodeListRepo) {
+    private let episodeListRepository: EpisodeListRepository
+    private let mapper: EpisodeMapper
+    
+    public init(episodeListRepository: EpisodeListRepository,
+                mapper: EpisodeMapper) {
         self.episodeListRepository = episodeListRepository
+        self.mapper = mapper
     }
 
     public func get(serie: Serie) async throws -> [EpisodeEntity] {
-        try await episodeListRepository.get(serie: .init(from: serie), decoder: JSONDecoder())
+        try await episodeListRepository.get(serie: .init(from: serie))
+            .map { mapper.map(from: $0) }
     }
 
 }

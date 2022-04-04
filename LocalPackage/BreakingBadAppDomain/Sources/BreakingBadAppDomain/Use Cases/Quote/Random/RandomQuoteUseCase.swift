@@ -12,16 +12,19 @@ public protocol RandomQuoteUseCase {
     func get() async throws -> QuoteEntity?
 }
 
-public struct RandomQuoteUseCaseImp<RandomQuoteRepo: RandomQuoteRepository>: RandomQuoteUseCase
-where RandomQuoteRepo.OUT == QuoteEntity {
+public struct RandomQuoteUseCaseImp: RandomQuoteUseCase {
 
-    private let quoteRepository: RandomQuoteRepo
+    private let quoteRepository: RandomQuoteRepository
+    private let mapper: QuoteMapper
 
-    public init(quoteRepository: RandomQuoteRepo) {
+    public init(quoteRepository: RandomQuoteRepository,
+                mapper: QuoteMapper) {
         self.quoteRepository = quoteRepository
+        self.mapper = mapper
     }
 
     public func get() async throws -> QuoteEntity? {
-        try await quoteRepository.get(decoder: JSONDecoder())
+        try await quoteRepository.get()
+            .map { mapper.map(from: $0) }
     }
 }

@@ -9,20 +9,13 @@ import Foundation
 
 public struct CharacterDetailsAPI: API {
 
-    public init() { }
+    private let characterId: Int
 
-    private var characterId: Int?
-
-    mutating func setCharacterID(_ id: Int) {
+    public init(id: Int) {
         self.characterId = id
     }
 
     func build() -> URLRequest? {
-
-        guard let characterId = characterId else {
-            return nil
-        }
-
         var urlComponent = URLComponents()
         urlComponent.scheme = "https"
         urlComponent.host = "www.breakingbadapi.com"

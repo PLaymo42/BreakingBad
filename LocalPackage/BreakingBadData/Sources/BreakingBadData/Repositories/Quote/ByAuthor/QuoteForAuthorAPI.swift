@@ -7,21 +7,11 @@
 
 import Foundation
 
-public struct QuoteForAuthorAPI: API {
+struct QuoteForAuthorAPI: API {
 
-    public init() { }
-
-    private var author: String?
-
-    mutating func setAuthor(_ author: String) {
-        self.author = author
-    }
+    var author: String
 
     func build() -> URLRequest? {
-
-        guard let author = author else {
-            return nil
-        }
 
         var urlComponent = URLComponents()
         urlComponent.scheme = "https"

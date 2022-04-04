@@ -9,36 +9,29 @@ import Foundation
 import Helper
 
 public protocol EpisodeListRepository {
-    associatedtype OUT
-    func get(serie: EpisodeListAPI.Serie, decoder: JSONDecoder) async throws -> [OUT]
+    func get(serie: Serie) async throws -> [Episode]
 }
 
-public struct EpisodeListRepositoryImp<M: Mapper>: EpisodeListRepository where M.IN == Episode {
+struct EpisodeListRepositoryImp: EpisodeListRepository  {
     
-    private let api: EpisodeListAPI
-    private let mapper: M
     private let urlSession: NetworkSession
-
-    public init(api: EpisodeListAPI,
-         urlSession: NetworkSession,
-         mapper: M) {
-        self.mapper = mapper
+    private let decoder: JSONDecoder
+    
+    public init(urlSession: NetworkSession,
+                decoder: JSONDecoder) {
         self.urlSession = urlSession
-        self.api = api
+        self.decoder = decoder
     }
-
-    public func get(serie: EpisodeListAPI.Serie, decoder: JSONDecoder) async throws -> [M.OUT] {
-
-        var api = api
-        api.setSerie(serie)
+    
+    func get(serie: Serie) async throws -> [Episode] {
+        
+        let api = EpisodeListAPI(serie: serie)
         guard let urlRequest = api.build() else {
             throw BreakingBadError.malformedAPI
         }
-
-
+        
         let (data, response) = try await urlSession.data(for: urlRequest)
         try response.throwOnFailureStatusCode()
-        let decoded = try decoder.decode([M.IN].self, from: data)
-        return decoded.map { mapper.map(from: $0) }
+        return try decoder.decode([Episode].self, from: data)
     }
 }

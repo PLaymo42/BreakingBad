@@ -8,31 +8,28 @@
 import Foundation
 
 public protocol RandomQuoteRepository {
-    associatedtype OUT
-    func get(decoder: JSONDecoder) async throws -> OUT?
+    func get() async throws -> Quote?
 }
 
-public struct RandomQuoteRepositoryImp<M: Mapper>: RandomQuoteRepository where M.IN == Quote {
+public struct RandomQuoteRepositoryImp: RandomQuoteRepository {
 
-    private let api: RandomQuoteAPI
-    private let mapper: M
     private let urlSession: NetworkSession
+    private let decoder: JSONDecoder
 
-    public init(api: RandomQuoteAPI,
-                urlSession: NetworkSession,
-                mapper: M) {
-        self.mapper = mapper
+    public init(urlSession: NetworkSession,
+                decoder: JSONDecoder) {
         self.urlSession = urlSession
-        self.api = api
+        self.decoder = decoder
     }
 
-    public func get(decoder: JSONDecoder) async throws -> M.OUT? {
+    public func get() async throws -> Quote? {
 
+        let api = RandomQuoteAPI()
         guard let urlRequest = api.build() else { throw BreakingBadError.malformedAPI }
 
         let (data, response) = try await urlSession.data(for: urlRequest)
         try response.throwOnFailureStatusCode()
-        let decoded = try decoder.decode([M.IN].self, from: data)
-        return decoded.first.map { mapper.map(from: $0) }
+        let decoded = try decoder.decode([Quote].self, from: data)
+        return decoded.first
     }
 }

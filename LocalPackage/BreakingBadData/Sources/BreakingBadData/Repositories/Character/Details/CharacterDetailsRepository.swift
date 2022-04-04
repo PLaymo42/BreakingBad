@@ -9,32 +9,27 @@ import Foundation
 import Helper
 
 public protocol CharacterDetailsRepository {
-    associatedtype OUT
-    func get(id: Int, decoder: JSONDecoder) async throws -> OUT?
+    func get(id: Int) async throws -> Character?
 }
 
-public struct CharacterDetailsRepositoryImp<M: Mapper>: CharacterDetailsRepository where M.IN == Character {
+struct CharacterDetailsRepositoryImp: CharacterDetailsRepository {
     
-    private let api: CharacterDetailsAPI
-    private let mapper: M
     private let urlSession: NetworkSession
-
-    public init(api: CharacterDetailsAPI,
-                urlSession: NetworkSession,
-                mapper: M) {
-        self.mapper = mapper
+    private let decoder: JSONDecoder
+    
+    init(urlSession: NetworkSession,
+         decoder: JSONDecoder) {
         self.urlSession = urlSession
-        self.api = api
+        self.decoder = decoder
     }
-
-    public func get(id: Int, decoder: JSONDecoder) async throws -> M.OUT? {
-        var api = api
-        api.setCharacterID(id)
+    
+    func get(id: Int) async throws -> Character? {
+        let api = CharacterDetailsAPI(id: id)
         guard let urlRequest = api.build() else { throw BreakingBadError.malformedAPI }
-
+        
         let (data, response) = try await urlSession.data(for: urlRequest)
         try response.throwOnFailureStatusCode()
-        let decoded = try decoder.decode([M.IN].self, from: data)
-        return decoded.first.flatMap { mapper.map(from: $0) }
+        let decoded = try decoder.decode([Character].self, from: data)
+        return decoded.first
     }
 }

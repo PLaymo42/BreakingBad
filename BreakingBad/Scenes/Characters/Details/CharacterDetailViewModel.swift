@@ -10,6 +10,7 @@ import UIKit
 import BreakingBadAppDomain
 import Combine
 
+@MainActor
 class CharacterDetailViewModel: ObservableObject {
 
     private let useCase: CharacterDetailUseCase
@@ -22,7 +23,7 @@ class CharacterDetailViewModel: ObservableObject {
 
     @Published var model: CharacterDetailViewController.Model?
 
-    func load(id: Int) {
+    func load(id: Int) async {
         Task {
             guard let character = try? await useCase.get(id: id) else {
                 return
@@ -40,19 +41,16 @@ class CharacterDetailViewModel: ObservableObject {
                 ),
                 quotes: character.quotes.map { $0.quote }
             )
-            DispatchQueue.main.async {
-                self.model = model
-            }
+            
+            self.model = model
 
             if let url = character.infos.headshotURL,
                let image = try? await imageFetcher.image(forURL: url) {
-                DispatchQueue.main.async {
-                    var model = self.model
-                    model?.header.headshot = image
-                    self.model = model
-                }
+                
+                var model = self.model
+                model?.header.headshot = image
+                self.model = model
             }
-
         }
     }
 

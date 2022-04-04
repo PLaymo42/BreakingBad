@@ -7,10 +7,7 @@
 
 import Foundation
 
-public struct CharacterListAPI: API {
-
-    public init() { }
-
+struct CharacterListAPI: API {    
     func build() -> URLRequest? {
         var url = URL(string: "https://www.breakingbadapi.com/api/")!
         url.appendPathComponent("characters")

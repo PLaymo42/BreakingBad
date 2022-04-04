@@ -18,6 +18,7 @@ class CharacterListRouterImp: CharacterListRouter {
 
     weak var navigationController: UINavigationController?
 
+    @MainActor
     func openDetail(id: Int) {
 
         // TODO: improve dependency injection
@@ -25,16 +26,10 @@ class CharacterListRouterImp: CharacterListRouter {
             characterId: id,
             viewModel: CharacterDetailViewModel(
                 useCase: CharacterDetailUseCaseImp(
-                    characterRepository: CharacterDetailsRepositoryImp(
-                        api: CharacterDetailsAPI(),
-                        urlSession: URLSession.shared,
-                        mapper: CharacterMapper()
-                    ),
-                    quotesRepository: QuoteForAuthorRepositoryImp(
-                        api: QuoteForAuthorAPI(),
-                        urlSession: URLSession.shared,
-                        mapper: QuoteMapper()
-                    )
+                    characterRepository: Server.breakingBadService.characterDetailsRepository,
+                    quotesRepository: Server.breakingBadService.quoteForAuthorRepository,
+                    characterMapper: CharacterMapper(),
+                    quoteMapper: QuoteMapper()
                 ),
                 imageFetcher: Dependencies.imageFetcher
             )

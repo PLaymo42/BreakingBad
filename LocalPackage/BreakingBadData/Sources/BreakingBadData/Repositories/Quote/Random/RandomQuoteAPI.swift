@@ -7,11 +7,9 @@
 
 import Foundation
 
-public struct RandomQuoteAPI: API {
+struct RandomQuoteAPI: API {
 
-    public init() {}
-
-    public func build() -> URLRequest? {
+    func build() -> URLRequest? {
         URLRequest(url: URL(string: "https://www.breakingbadapi.com/api/quote/random")!)
     }
 }

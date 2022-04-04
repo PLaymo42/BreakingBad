@@ -8,6 +8,7 @@
 import SwiftUI
 import BreakingBadAppDomain
 
+@MainActor
 class RandomQuoteViewModel: ObservableObject {
 
     private let useCase: RandomQuoteUseCase
@@ -17,19 +18,16 @@ class RandomQuoteViewModel: ObservableObject {
     }
 
     @Published private(set) var quote: QuoteView.Model?
-
-    func load() {
-        Task {
-            let fetched = try? await useCase.get()
-            let quote = fetched.map {
-                QuoteView.Model(text: $0.quote, author: $0.author)
-            }
-            DispatchQueue.main.async {
-                self.quote = quote
-            }
+    
+    func load() async {
+        let fetched = try? await useCase.get()
+        let quote = fetched.map {
+            QuoteView.Model(text: $0.quote, author: $0.author)
         }
+        
+        self.quote = quote
     }
-
+    
 }
 
 struct RandomQuoteView: View {
@@ -63,7 +61,7 @@ struct RandomQuoteView: View {
                     }
             }
             Spacer()
-            Button(action: viewModel.load) {
+            Button(action: { Task { await viewModel.load() } }) {
                 HStack {
                     Image(systemName: "arrow.clockwise")
                     Text("New quote")
@@ -76,7 +74,8 @@ struct RandomQuoteView: View {
                 .shadow(radius: 4)
             }
             .padding()
-        }.onAppear(perform: viewModel.load)
+        }
+        .task { await viewModel.load() }
     }
 }
 

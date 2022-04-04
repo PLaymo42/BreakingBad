@@ -8,32 +8,26 @@
 import Foundation
 
 public protocol QuoteForAuthorRepository {
-    associatedtype OUT
-    func get(forAuthor author: String, decoder: JSONDecoder) async throws -> [OUT]
+    func get(forAuthor author: String) async throws -> [Quote]
 }
 
-public struct QuoteForAuthorRepositoryImp<M: Mapper>: QuoteForAuthorRepository where M.IN == Quote {
+public struct QuoteForAuthorRepositoryImp: QuoteForAuthorRepository {
 
-    private let api: QuoteForAuthorAPI
-    private let mapper: M
     private let urlSession: NetworkSession
+    private let decoder: JSONDecoder
 
-    public init(api: QuoteForAuthorAPI,
-                urlSession: NetworkSession,
-                mapper: M) {
-        self.mapper = mapper
+    public init(urlSession: NetworkSession,
+                decoder: JSONDecoder) {
         self.urlSession = urlSession
-        self.api = api
+        self.decoder = decoder
     }
 
-    public func get(forAuthor author: String, decoder: JSONDecoder) async throws -> [M.OUT] {
-        var api = api
-        api.setAuthor(author)
+    public func get(forAuthor author: String) async throws -> [Quote] {
+        let api = QuoteForAuthorAPI(author: author)
         guard let urlRequest = api.build() else { throw BreakingBadError.malformedAPI }
 
         let (data, response) = try await urlSession.data(for: urlRequest)
         try response.throwOnFailureStatusCode()
-        let decoded = try decoder.decode([M.IN].self, from: data)
-        return decoded.map { mapper.map(from: $0) }
+        return try decoder.decode([Quote].self, from: data)
     }
 }

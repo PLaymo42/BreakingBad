@@ -8,47 +8,44 @@
 import SwiftUI
 import BreakingBadAppDomain
 
+@MainActor
 class SeasonListViewModel: ObservableObject {
     private let useCase: EpisodeListUseCase
-
+    
     @Published private(set) var seasons: [SeasonModel] = []
-
+    
     init(useCase: EpisodeListUseCase) {
         self.useCase = useCase
     }
-
-    func load() {
-        Task {
-            let episodes = try await useCase.get(serie: .breakingBad)
-            let seasons = Dictionary(grouping: episodes, by: { $0.season })
-                .sorted { $0.key < $1.key }
-                .enumerated()
-                .map {
-                    SeasonModel(
-                        id: $0.offset,
-                        seasonTitle: "Season \($0.element.key)",
-                        episodes: $0.element.value.map { episode in
-                            EpisodeView.Model(
-                                id: episode.id,
-                                title: episode.title,
-                                episodeNumberInfo: "S\(episode.season) | E\(episode.episode)",
-                                seen: false,
-                                airingDate: episode.airDate
-                            )
-                        }
-                    )
-                }
-            DispatchQueue.main.async {
-                self.seasons = seasons
+    
+    func load() async throws {
+        let episodes = try await useCase.get(serie: .breakingBad)
+        let seasons = Dictionary(grouping: episodes, by: { $0.season })
+            .sorted { $0.key < $1.key }
+            .enumerated()
+            .map {
+                SeasonModel(
+                    id: $0.offset,
+                    seasonTitle: "Season \($0.element.key)",
+                    episodes: $0.element.value.map { episode in
+                        EpisodeView.Model(
+                            id: episode.id,
+                            title: episode.title,
+                            episodeNumberInfo: "S\(episode.season) | E\(episode.episode)",
+                            seen: false,
+                            airingDate: episode.airDate
+                        )
+                    }
+                )
             }
-        }
+        self.seasons = seasons
     }
 }
 
 struct SeasonListView: View {
-
+    
     @ObservedObject var viewModel: SeasonListViewModel
-
+    
     var body: some View {
         ScrollView(.vertical) {
             LazyVStack(spacing: 8) {
@@ -56,12 +53,15 @@ struct SeasonListView: View {
                     SeasonView(season: $0)
                 }
             }
-        }.onAppear(perform: viewModel.load)
+        }
+        .task {
+            try? await viewModel.load()
+        }
     }
 }
 
 struct SeasonListView_Previews: PreviewProvider {
-
+    
     class EpisodeListUseCaseMock: EpisodeListUseCase {
         func get(serie: Serie) async throws -> [EpisodeEntity] {
             [
@@ -80,8 +80,8 @@ struct SeasonListView_Previews: PreviewProvider {
             ]
         }
     }
-
-
+    
+    
     static var previews: some View {
         SeasonListView(
             viewModel: SeasonListViewModel(

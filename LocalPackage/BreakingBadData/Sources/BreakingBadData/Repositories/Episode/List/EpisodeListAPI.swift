@@ -7,19 +7,17 @@
 
 import Foundation
 
-public struct EpisodeListAPI: API {
+public enum Serie: String {
+    case breakingBad = "Breaking Bad"
+    case betterCallSaul = "Better Call Saul"
+}
 
-    public enum Serie: String {
-        case breakingBad = "Breaking Bad"
-        case betterCallSaul = "Better Call Saul"
-    }
+struct EpisodeListAPI: API {
 
-    public init() { }
+    var serie: Serie
 
-    private var pathParameters = [String: String]()
-
-    mutating func setSerie(_ serie: Serie) {
-        pathParameters["series"] = serie.rawValue
+    private var pathParameters: [String: String] {
+        ["serie": serie.rawValue]
     }
 
     func build() -> URLRequest? {
@@ -29,9 +27,9 @@ public struct EpisodeListAPI: API {
         urlComponent.host = "www.breakingbadapi.com"
         urlComponent.path = "/api/episodes"
 
-        urlComponent.queryItems = pathParameters.map {
-            URLQueryItem(name: $0.key, value: $0.value.replacingOccurrences(of: " ", with: "+"))
-        }
+        urlComponent.queryItems = pathParameters
+            .mapValues { $0.replacingOccurrences(of: " ", with: "+") }
+            .map { URLQueryItem(name: $0.key, value: $0.value) }
 
         return urlComponent.url.flatMap { URLRequest(url: $0) }
     }

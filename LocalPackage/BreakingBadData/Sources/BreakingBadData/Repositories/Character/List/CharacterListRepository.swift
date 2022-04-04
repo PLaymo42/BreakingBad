@@ -9,31 +9,25 @@ import Foundation
 import Helper
 
 public protocol CharacterListRepository {
-    associatedtype OUT
-    func get(decoder: JSONDecoder) async throws -> [OUT]
+    func get() async throws -> [Character]
 }
 
-public struct CharacterListRepositoryImp<M: Mapper>: CharacterListRepository where M.IN == Character {
+struct CharacterListRepositoryImp: CharacterListRepository {
     
-    private let api: CharacterListAPI
-    private let mapper: M
     private let urlSession: NetworkSession
-
-    public init(api: CharacterListAPI,
-         urlSession: NetworkSession,
-         mapper: M) {
-        self.mapper = mapper
+    private let decoder: JSONDecoder
+    
+    public init(urlSession: NetworkSession,
+                decoder: JSONDecoder) {
         self.urlSession = urlSession
-        self.api = api
+        self.decoder = decoder
     }
-
-    public func get(decoder: JSONDecoder) async throws -> [M.OUT] {
-
+    
+    public func get() async throws -> [Character] {
+        let api = CharacterListAPI()
         guard let urlRequest = api.build() else { throw BreakingBadError.malformedAPI }
-
         let (data, response) = try await urlSession.data(for: urlRequest)
         try response.throwOnFailureStatusCode()
-        let decoded = try decoder.decode([M.IN].self, from: data)
-        return decoded.map { mapper.map(from: $0) }
+        return try decoder.decode([Character].self, from: data)
     }
 }
